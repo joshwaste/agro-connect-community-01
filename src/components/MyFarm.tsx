@@ -5,16 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Leaf, Droplets, Zap, TrendingUp, MapPin, Users, Upload, Bell, Map } from "lucide-react";
+import { Leaf, Droplets, Zap, TrendingUp, MapPin, Users, Camera, Bell, Map, Upload, Image } from "lucide-react";
 
 const MyFarm = () => {
   const [selectedFeature, setSelectedFeature] = useState("kisan-circle");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [reportForm, setReportForm] = useState({
-    cropType: "",
-    problemDescription: "",
-    location: ""
-  });
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [diseaseResult, setDiseaseResult] = useState<any>(null);
 
   const coreFeatures = [
     {
@@ -70,16 +67,60 @@ const MyFarm = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         setUploadedImage(e.target?.result as string);
+        setDiseaseResult(null);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleFormChange = (field: string, value: string) => {
-    setReportForm(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleCameraCapture = () => {
+    // In a real app, this would open the camera
+    // For demo purposes, we'll simulate camera capture
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment'; // Use rear camera
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setUploadedImage(e.target?.result as string);
+          setDiseaseResult(null);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
+  const identifyDisease = () => {
+    if (!uploadedImage) return;
+    
+    setIsAnalyzing(true);
+    
+    // Simulate AI analysis
+    setTimeout(() => {
+      setDiseaseResult({
+        disease: "Late Blight",
+        confidence: 87,
+        severity: "Moderate",
+        description: "Late blight is a fungal disease that affects tomatoes and potatoes. It appears as dark, water-soaked spots on leaves.",
+        treatment: [
+          "Remove affected leaves immediately",
+          "Apply copper-based fungicide",
+          "Improve air circulation",
+          "Avoid overhead watering"
+        ],
+        prevention: [
+          "Plant resistant varieties",
+          "Ensure proper spacing",
+          "Water at soil level",
+          "Apply preventive fungicide sprays"
+        ]
+      });
+      setIsAnalyzing(false);
+    }, 3000);
   };
 
   const renderFeatureContent = () => {
@@ -90,62 +131,126 @@ const MyFarm = () => {
             <div className="space-y-4">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <Users className="h-6 w-6 text-orange-600" />
-                  <h3 className="text-xl font-semibold">Report Issue</h3>
+                  <Leaf className="h-6 w-6 text-green-600" />
+                  <h3 className="text-xl font-semibold">Find Plant Disease</h3>
                 </div>
-                <p className="text-muted-foreground">Report crop issues to the farming community</p>
+                <p className="text-muted-foreground">Take a photo or upload an image to identify plant diseases</p>
               </div>
               
               <div className="space-y-4 border rounded-lg p-4">
-                <div>
-                  <Label htmlFor="crop-type">Type of crop grown</Label>
-                  <Input 
-                    id="crop-type" 
-                    placeholder="e.g., Rice, Wheat, Cotton"
-                    value={reportForm.cropType}
-                    onChange={(e) => handleFormChange('cropType', e.target.value)}
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="problem-desc">Describe problem</Label>
-                  <Textarea 
-                    id="problem-desc" 
-                    placeholder="Describe the issue you're facing..."
-                    value={reportForm.problemDescription}
-                    onChange={(e) => handleFormChange('problemDescription', e.target.value)}
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="photo-upload">Upload photo of issue</Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                    {uploadedImage ? (
-                      <div className="space-y-2">
-                        <img src={uploadedImage} alt="Issue photo" className="max-w-full h-32 object-cover mx-auto rounded" />
-                        <p className="text-sm text-green-600">Photo uploaded successfully</p>
+                {/* Camera and Upload Section */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button 
+                      onClick={handleCameraCapture}
+                      className="h-20 flex flex-col items-center justify-center gap-2"
+                      variant="outline"
+                    >
+                      <Camera className="h-8 w-8" />
+                      <span className="text-sm">Take Photo</span>
+                    </Button>
+                    
+                    <Label htmlFor="photo-upload" className="cursor-pointer">
+                      <div className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary transition-colors">
+                        <Upload className="h-8 w-8" />
+                        <span className="text-sm">Upload Image</span>
                       </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <Upload className="h-8 w-8 mx-auto text-gray-400" />
-                        <Label htmlFor="photo-upload" className="cursor-pointer block">
-                          <Button variant="outline" className="w-full" asChild>
-                            <span>Upload Photo</span>
-                          </Button>
-                        </Label>
-                        <Input
-                          id="photo-upload"
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handleImageUpload}
-                        />
-                      </div>
-                    )}
+                      <Input
+                        id="photo-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                    </Label>
                   </div>
+                  
+                  {/* Image Preview */}
+                  {uploadedImage && (
+                    <div className="space-y-3">
+                      <div className="relative">
+                        <img 
+                          src={uploadedImage} 
+                          alt="Plant image" 
+                          className="w-full h-48 object-cover rounded-lg border"
+                        />
+                        {isAnalyzing && (
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
+                            <div className="text-white text-center">
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+                              <p className="text-sm">Analyzing image...</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {!diseaseResult && !isAnalyzing && (
+                        <Button onClick={identifyDisease} className="w-full">
+                          <Leaf className="h-4 w-4 mr-2" />
+                          Identify Plant Disease
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Disease Results */}
+                  {diseaseResult && (
+                    <div className="space-y-4 bg-green-50 p-4 rounded-lg border border-green-200">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-semibold text-green-800">Disease Identified</h4>
+                        <Badge variant="outline" className="bg-green-100 text-green-700">
+                          {diseaseResult.confidence}% confidence
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <h5 className="font-medium text-green-800">{diseaseResult.disease}</h5>
+                          <p className="text-sm text-green-700 mt-1">{diseaseResult.description}</p>
+                          <Badge 
+                            variant={diseaseResult.severity === "High" ? "destructive" : "secondary"}
+                            className="mt-2"
+                          >
+                            Severity: {diseaseResult.severity}
+                          </Badge>
+                        </div>
+                        
+                        <div>
+                          <h6 className="font-medium text-green-800 mb-2">Treatment:</h6>
+                          <ul className="text-sm text-green-700 space-y-1">
+                            {diseaseResult.treatment.map((item: string, index: number) => (
+                              <li key={index} className="flex items-start gap-2">
+                                <span className="text-green-600 mt-1">•</span>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h6 className="font-medium text-green-800 mb-2">Prevention:</h6>
+                          <ul className="text-sm text-green-700 space-y-1">
+                            {diseaseResult.prevention.map((item: string, index: number) => (
+                              <li key={index} className="flex items-start gap-2">
+                                <span className="text-green-600 mt-1">•</span>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        <div className="flex gap-2 pt-2">
+                          <Button size="sm" variant="outline" className="flex-1">
+                            Share with Community
+                          </Button>
+                          <Button size="sm" className="flex-1">
+                            Get Expert Help
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                
-                <Button className="w-full">Submit Report</Button>
               </div>
             </div>
             
@@ -184,8 +289,8 @@ const MyFarm = () => {
                     <div className="bg-red-50 p-3 rounded border-l-4 border-red-400">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="font-medium text-red-800">Pest Alert - 2km away</p>
-                          <p className="text-sm text-red-600">Cotton bollworm detected</p>
+                          <p className="font-medium text-red-800">Disease Alert - 2km away</p>
+                          <p className="text-sm text-red-600">Late blight detected in tomatoes</p>
                         </div>
                         <Badge variant="destructive" className="text-xs">High</Badge>
                       </div>
@@ -205,7 +310,7 @@ const MyFarm = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-medium text-green-800">Success Story - 1km</p>
-                          <p className="text-sm text-green-600">Organic method worked</p>
+                          <p className="text-sm text-green-600">Organic treatment worked</p>
                         </div>
                         <Badge variant="outline" className="text-xs">Info</Badge>
                       </div>
@@ -574,6 +679,7 @@ const MyFarm = () => {
             <span>• ICAR Agricultural Data</span>
             <span>• Government Market Data</span>
             <span>• Weather APIs</span>
+            <span>• Plant Disease AI Model</span>
           </div>
         </div>
       </div>
