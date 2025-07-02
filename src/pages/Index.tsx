@@ -4,6 +4,7 @@ import Marketplace from "@/components/Marketplace";
 import MyFarm from "@/components/MyFarm";
 import GovernmentSchemes from "@/components/GovernmentSchemes";
 import LoanSuggestions from "@/components/LoanSuggestions";
+import Profile from "@/components/Profile";
 import Navigation from "@/components/Navigation";
 
 const Index = () => {
@@ -22,12 +23,7 @@ const Index = () => {
       case 'loans':
         return <LoanSuggestions />;
       case 'profile':
-        return (
-          <div className="min-h-screen bg-background p-6">
-            <h1 className="text-2xl font-bold mb-4">Profile</h1>
-            <p className="text-muted-foreground">Profile section coming soon...</p>
-          </div>
-        );
+        return <Profile />;
       default:
         return <Dashboard />;
     }
