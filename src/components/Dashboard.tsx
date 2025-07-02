@@ -1,9 +1,9 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import heroImage from "@/assets/hero-farm.jpg";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -74,13 +74,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative h-64 overflow-hidden">
-        <img 
-          src={heroImage} 
-          alt="Agricultural landscape" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-primary/20" />
+      <div className="relative h-64 overflow-hidden bg-gradient-to-r from-green-600 to-green-800">
         <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-6">
           <h1 className="text-3xl font-bold mb-2 text-center">
             Welcome to AgroConnect
