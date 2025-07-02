@@ -4,21 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Leaf, Droplets, Zap, TrendingUp, Camera, Upload } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Leaf, Droplets, Zap, TrendingUp, MapPin, Users, Upload, Bell, Map } from "lucide-react";
 
 const MyFarm = () => {
-  const [selectedFeature, setSelectedFeature] = useState("disease-detection");
+  const [selectedFeature, setSelectedFeature] = useState("kisan-circle");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [reportForm, setReportForm] = useState({
+    cropType: "",
+    problemDescription: "",
+    location: ""
+  });
 
   const coreFeatures = [
     {
-      id: "disease-detection",
-      title: "Plant Disease Detection",
-      icon: Camera,
-      description: "AI-powered image classification for early disease detection",
-      color: "bg-green-100 text-green-700",
-      status: "AutoML Vision Active",
-      badge: "Image Classification"
+      id: "kisan-circle",
+      title: "Kisan Circle",
+      icon: Users,
+      description: "Community-driven issue reporting and live mapping system",
+      color: "bg-orange-100 text-orange-700",
+      status: "Firebase & Maps Active",
+      badge: "Community Network"
     },
     {
       id: "crop-suggestions",
@@ -69,72 +75,149 @@ const MyFarm = () => {
     }
   };
 
+  const handleFormChange = (field: string, value: string) => {
+    setReportForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const renderFeatureContent = () => {
-    const feature = coreFeatures.find(f => f.id === selectedFeature);
-    
     switch (selectedFeature) {
-      case "disease-detection":
+      case "kisan-circle":
         return (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <Camera className="h-6 w-6 text-green-600" />
-                  <h3 className="text-xl font-semibold">Plant Disease Detection</h3>
+                  <Users className="h-6 w-6 text-orange-600" />
+                  <h3 className="text-xl font-semibold">Report Issue</h3>
                 </div>
-                <p className="text-muted-foreground">Upload an image of your plant to detect diseases early</p>
+                <p className="text-muted-foreground">Report crop issues to the farming community</p>
               </div>
               
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                {uploadedImage ? (
-                  <div className="space-y-4">
-                    <img src={uploadedImage} alt="Uploaded plant" className="max-w-full h-40 object-cover mx-auto rounded-lg" />
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <h4 className="font-semibold text-green-800">Analysis Complete</h4>
-                      <p className="text-green-700">Healthy plant detected. No diseases found.</p>
-                      <Badge className="mt-2" variant="outline">Confidence: 94%</Badge>
-                    </div>
+              <div className="space-y-4 border rounded-lg p-4">
+                <div>
+                  <Label htmlFor="crop-type">Type of crop grown</Label>
+                  <Input 
+                    id="crop-type" 
+                    placeholder="e.g., Rice, Wheat, Cotton"
+                    value={reportForm.cropType}
+                    onChange={(e) => handleFormChange('cropType', e.target.value)}
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="problem-desc">Describe problem</Label>
+                  <Textarea 
+                    id="problem-desc" 
+                    placeholder="Describe the issue you're facing..."
+                    value={reportForm.problemDescription}
+                    onChange={(e) => handleFormChange('problemDescription', e.target.value)}
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="photo-upload">Upload photo of issue</Label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                    {uploadedImage ? (
+                      <div className="space-y-2">
+                        <img src={uploadedImage} alt="Issue photo" className="max-w-full h-32 object-cover mx-auto rounded" />
+                        <p className="text-sm text-green-600">Photo uploaded successfully</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <Upload className="h-8 w-8 mx-auto text-gray-400" />
+                        <Label htmlFor="photo-upload" className="cursor-pointer block">
+                          <Button variant="outline" className="w-full" asChild>
+                            <span>Upload Photo</span>
+                          </Button>
+                        </Label>
+                        <Input
+                          id="photo-upload"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageUpload}
+                        />
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    <Camera className="h-12 w-12 mx-auto text-gray-400" />
-                    <div className="space-y-2">
-                      <Button variant="outline" className="w-full">
-                        <Camera className="h-4 w-4 mr-2" />
-                        Take Picture
-                      </Button>
-                      <Label htmlFor="image-upload" className="cursor-pointer block">
-                        <Button variant="outline" className="w-full" asChild>
-                          <span>
-                            <Upload className="h-4 w-4 mr-2" />
-                            Upload Picture
-                          </span>
-                        </Button>
-                      </Label>
-                      <Input
-                        id="image-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageUpload}
-                      />
-                    </div>
-                    <p className="text-sm text-muted-foreground">Supports JPG, PNG up to 10MB</p>
-                  </div>
-                )}
+                </div>
+                
+                <Button className="w-full">Submit Report</Button>
               </div>
             </div>
             
-            {/* Right side - can be used for additional info or remain empty */}
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-green-800 mb-3">Disease Detection Features</h4>
-              <ul className="space-y-2 text-green-700">
-                <li>• Early disease identification</li>
-                <li>• Treatment recommendations</li>
-                <li>• Pest identification</li>
-                <li>• Growth monitoring</li>
-                <li>• Nutrient deficiency detection</li>
-              </ul>
+            <div className="space-y-4">
+              {/* Live Map Section */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Map className="h-5 w-5 text-blue-500" />
+                    Live Map
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-blue-50 border-2 border-dashed border-blue-200 rounded-lg p-6 text-center">
+                    <MapPin className="h-12 w-12 mx-auto text-blue-400 mb-2" />
+                    <p className="text-sm text-blue-600">Interactive map showing nearby issues</p>
+                    <p className="text-xs text-blue-500 mt-1">GPS Permission Required</p>
+                  </div>
+                  <Button variant="outline" className="w-full mt-3">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    Enable Location Access
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              {/* Community Alerts Section */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Bell className="h-5 w-5 text-red-500" />
+                    Community Alerts
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="bg-red-50 p-3 rounded border-l-4 border-red-400">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-red-800">Pest Alert - 2km away</p>
+                          <p className="text-sm text-red-600">Cotton bollworm detected</p>
+                        </div>
+                        <Badge variant="destructive" className="text-xs">High</Badge>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-3 rounded border-l-4 border-yellow-400">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-yellow-800">Weather Warning - 5km</p>
+                          <p className="text-sm text-yellow-600">Heavy rainfall expected</p>
+                        </div>
+                        <Badge variant="outline" className="text-xs">Medium</Badge>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-green-50 p-3 rounded border-l-4 border-green-400">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-green-800">Success Story - 1km</p>
+                          <p className="text-sm text-green-600">Organic method worked</p>
+                        </div>
+                        <Badge variant="outline" className="text-xs">Info</Badge>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Button variant="outline" className="w-full mt-3">
+                    <Bell className="h-4 w-4 mr-2" />
+                    Enable Push Notifications
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         );
@@ -486,9 +569,9 @@ const MyFarm = () => {
         <div className="bg-gray-50 rounded-lg p-4">
           <h4 className="font-semibold mb-2 text-center">Powered by Trusted Data Sources</h4>
           <div className="flex flex-wrap justify-center items-center gap-4 text-sm text-muted-foreground">
-            <span>• Kaggle Plant Disease Dataset</span>
+            <span>• Firebase Database</span>
+            <span>• Google Maps API</span>
             <span>• ICAR Agricultural Data</span>
-            <span>• Google Earth Engine</span>
             <span>• Government Market Data</span>
             <span>• Weather APIs</span>
           </div>
