@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,42 +75,66 @@ const MyFarm = () => {
     switch (selectedFeature) {
       case "disease-detection":
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h3 className="text-xl font-semibold mb-2">Plant Disease Detection</h3>
-              <p className="text-muted-foreground">Upload an image of your plant to detect diseases early</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Camera className="h-6 w-6 text-green-600" />
+                  <h3 className="text-xl font-semibold">Plant Disease Detection</h3>
+                </div>
+                <p className="text-muted-foreground">Upload an image of your plant to detect diseases early</p>
+              </div>
+              
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                {uploadedImage ? (
+                  <div className="space-y-4">
+                    <img src={uploadedImage} alt="Uploaded plant" className="max-w-full h-40 object-cover mx-auto rounded-lg" />
+                    <div className="bg-green-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-green-800">Analysis Complete</h4>
+                      <p className="text-green-700">Healthy plant detected. No diseases found.</p>
+                      <Badge className="mt-2" variant="outline">Confidence: 94%</Badge>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Camera className="h-12 w-12 mx-auto text-gray-400" />
+                    <div className="space-y-2">
+                      <Button variant="outline" className="w-full">
+                        <Camera className="h-4 w-4 mr-2" />
+                        Take Picture
+                      </Button>
+                      <Label htmlFor="image-upload" className="cursor-pointer block">
+                        <Button variant="outline" className="w-full" asChild>
+                          <span>
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload Picture
+                          </span>
+                        </Button>
+                      </Label>
+                      <Input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                    </div>
+                    <p className="text-sm text-muted-foreground">Supports JPG, PNG up to 10MB</p>
+                  </div>
+                )}
+              </div>
             </div>
             
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              {uploadedImage ? (
-                <div className="space-y-4">
-                  <img src={uploadedImage} alt="Uploaded plant" className="max-w-full h-48 object-cover mx-auto rounded-lg" />
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <h4 className="font-semibold text-green-800">Analysis Complete</h4>
-                    <p className="text-green-700">Healthy plant detected. No diseases found.</p>
-                    <Badge className="mt-2" variant="outline">Confidence: 94%</Badge>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <Upload className="h-12 w-12 mx-auto text-gray-400" />
-                  <div>
-                    <Label htmlFor="image-upload" className="cursor-pointer">
-                      <Button variant="outline" asChild>
-                        <span>Upload Plant Image</span>
-                      </Button>
-                    </Label>
-                    <Input
-                      id="image-upload"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleImageUpload}
-                    />
-                  </div>
-                  <p className="text-sm text-muted-foreground">Supports JPG, PNG up to 10MB</p>
-                </div>
-              )}
+            {/* Right side - can be used for additional info or remain empty */}
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-green-800 mb-3">Disease Detection Features</h4>
+              <ul className="space-y-2 text-green-700">
+                <li>• Early disease identification</li>
+                <li>• Treatment recommendations</li>
+                <li>• Pest identification</li>
+                <li>• Growth monitoring</li>
+                <li>• Nutrient deficiency detection</li>
+              </ul>
             </div>
           </div>
         );
