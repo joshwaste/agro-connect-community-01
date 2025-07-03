@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Calendar, User, ExternalLink } from "lucide-react";
+import { ArrowLeft, Calendar, User, ExternalLink, Clock, Share2 } from "lucide-react";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,7 +38,7 @@ The adoption of these technologies and practices can help maintain wheat product
       date: "4/20/2025",
       category: "Climate Change",
       readTime: "5 min read",
-      image: "🌾"
+      image: "https://images.pexels.com/photos/326082/pexels-photo-326082.jpeg?auto=compress&cs=tinysrgb&w=400"
     },
     {
       id: 2,
@@ -83,7 +83,7 @@ Farmers transitioning to sustainable practices should start gradually, focusing 
       date: "4/20/2025",
       category: "Sustainable Farming",
       readTime: "7 min read",
-      image: "🌱"
+      image: "https://images.pexels.com/photos/1595104/pexels-photo-1595104.jpeg?auto=compress&cs=tinysrgb&w=400"
     },
     {
       id: 3,
@@ -137,7 +137,7 @@ The government's Digital India initiative and various agri-tech startups are wor
       date: "4/19/2025",
       category: "Technology",
       readTime: "6 min read",
-      image: "📱"
+      image: "https://images.pexels.com/photos/5473955/pexels-photo-5473955.jpeg?auto=compress&cs=tinysrgb&w=400"
     },
     {
       id: 4,
@@ -195,7 +195,7 @@ The package is expected to benefit over 12 crore farmers across the country and 
       date: "4/18/2025",
       category: "Government Policy",
       readTime: "8 min read",
-      image: "🏛️"
+      image: "https://images.pexels.com/photos/8728380/pexels-photo-8728380.jpeg?auto=compress&cs=tinysrgb&w=400"
     },
     {
       id: 5,
@@ -269,7 +269,7 @@ Farmers interested in organic transition should start with small plots, get prop
       date: "4/17/2025",
       category: "Market Trends",
       readTime: "9 min read",
-      image: "🌿"
+      image: "https://images.pexels.com/photos/1595104/pexels-photo-1595104.jpeg?auto=compress&cs=tinysrgb&w=400"
     }
   ];
 
@@ -291,78 +291,111 @@ Farmers interested in organic transition should start with small plots, get prop
     article.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const getCategoryColor = (category: string) => {
+    const colors = {
+      "Climate Change": "bg-red-100 text-red-700 border-red-200",
+      "Sustainable Farming": "bg-green-100 text-green-700 border-green-200",
+      "Technology": "bg-blue-100 text-blue-700 border-blue-200",
+      "Government Policy": "bg-purple-100 text-purple-700 border-purple-200",
+      "Market Trends": "bg-orange-100 text-orange-700 border-orange-200"
+    };
+    return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-700 border-gray-200";
+  };
+
   if (selectedArticle) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         {/* Article View */}
-        <div className="p-6 max-w-4xl mx-auto">
-          <Button 
-            onClick={() => setSelectedArticle(null)}
-            variant="outline" 
-            className="mb-6 flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to News
-          </Button>
+        <div className="bg-white">
+          <div className="p-4 border-b">
+            <Button 
+              onClick={() => setSelectedArticle(null)}
+              variant="ghost" 
+              className="flex items-center gap-2 text-gray-600"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to News
+            </Button>
+          </div>
           
-          <article className="space-y-6">
-            {/* Article Header */}
-            <div className="space-y-4">
-              <div className="text-6xl text-center">{selectedArticle.image}</div>
-              <Badge variant="secondary" className="w-fit">
-                {selectedArticle.category}
-              </Badge>
-              <h1 className="text-3xl font-bold leading-tight">
-                {selectedArticle.title}
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                {selectedArticle.summary}
-              </p>
+          <div className="p-6 max-w-4xl mx-auto">
+            <article className="space-y-6">
+              {/* Article Header */}
+              <div className="space-y-4">
+                <div className="w-full h-48 md:h-64 rounded-lg overflow-hidden bg-gray-100">
+                  <img 
+                    src={selectedArticle.image} 
+                    alt={selectedArticle.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
+                <div className="space-y-3">
+                  <Badge 
+                    variant="outline" 
+                    className={`w-fit ${getCategoryColor(selectedArticle.category)}`}
+                  >
+                    {selectedArticle.category}
+                  </Badge>
+                  
+                  <h1 className="text-2xl md:text-3xl font-bold leading-tight text-gray-900">
+                    {selectedArticle.title}
+                  </h1>
+                  
+                  <p className="text-lg text-gray-600 leading-relaxed">
+                    {selectedArticle.summary}
+                  </p>
+                  
+                  {/* Article Meta */}
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 border-b pb-4">
+                    <div className="flex items-center gap-1">
+                      <User className="h-4 w-4" />
+                      <span>{selectedArticle.author}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      <span>{selectedArticle.date}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      <span>{selectedArticle.readTime}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <ExternalLink className="h-4 w-4" />
+                      <span className="text-green-600 font-medium">{selectedArticle.source}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
-              {/* Article Meta */}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-b pb-4">
-                <div className="flex items-center gap-1">
-                  <User className="h-4 w-4" />
-                  <span>{selectedArticle.author}</span>
+              {/* Article Content */}
+              <div className="prose prose-lg max-w-none">
+                <div className="whitespace-pre-line text-gray-700 leading-relaxed text-base">
+                  {selectedArticle.content}
                 </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{selectedArticle.date}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <ExternalLink className="h-4 w-4" />
-                  <span>{selectedArticle.source}</span>
-                </div>
-                <Badge variant="outline">{selectedArticle.readTime}</Badge>
               </div>
-            </div>
-            
-            {/* Article Content */}
-            <div className="prose prose-lg max-w-none">
-              <div className="whitespace-pre-line text-foreground leading-relaxed">
-                {selectedArticle.content}
-              </div>
-            </div>
-            
-            {/* Article Footer */}
-            <div className="border-t pt-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
-                  Published by {selectedArticle.source}
+              
+              {/* Article Footer */}
+              <div className="border-t pt-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-500">
+                    Published by <span className="text-green-600 font-medium">{selectedArticle.source}</span>
+                  </div>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Share2 className="h-4 w-4" />
+                    Share Article
+                  </Button>
                 </div>
-                <Button variant="outline" size="sm">
-                  Share Article
-                </Button>
               </div>
-            </div>
-          </article>
+            </article>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <div className="relative h-64 overflow-hidden bg-gradient-to-r from-green-600 to-green-800">
         <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-6">
@@ -375,21 +408,21 @@ Farmers interested in organic transition should start with small plots, get prop
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 space-y-6">
         {/* Search Bar */}
         <div className="w-full">
           <Input
             placeholder="Search news articles, topics..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 text-lg"
+            className="w-full h-12 text-lg bg-white border-gray-200"
           />
         </div>
 
         {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-4">
           {stats.map((stat) => (
-            <Card key={stat.label} className="text-center">
+            <Card key={stat.label} className="text-center bg-white border-gray-200">
               <CardContent className="p-4">
                 <div className="text-2xl font-bold text-primary">{stat.value}</div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
@@ -402,63 +435,72 @@ Farmers interested in organic transition should start with small plots, get prop
         </div>
 
         {/* Latest News Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              📰 Latest News
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 px-2">
+            <h2 className="text-xl font-bold text-gray-900">📰 Latest News</h2>
+          </div>
+          
+          <div className="space-y-4">
             {filteredArticles.map((article) => (
-              <div 
+              <Card 
                 key={article.id}
                 onClick={() => setSelectedArticle(article)}
-                className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer hover:border-primary/50"
+                className="bg-white border-gray-200 hover:shadow-lg transition-all cursor-pointer hover:border-green-300 overflow-hidden"
               >
-                <div className="flex gap-4">
-                  <div className="text-3xl">{article.image}</div>
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-semibold text-lg leading-tight hover:text-primary transition-colors">
-                        {article.title}
-                      </h3>
-                      <Badge variant="outline" className="text-xs shrink-0">
-                        {article.category}
-                      </Badge>
+                <CardContent className="p-0">
+                  <div className="flex">
+                    {/* Image */}
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gray-100 flex-shrink-0">
+                      <img 
+                        src={article.image} 
+                        alt={article.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     
-                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
-                      {article.summary}
-                    </p>
-                    
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <div className="flex items-center gap-3">
-                        <span className="text-green-600 font-medium">{article.source}</span>
-                        <span>{article.date}</span>
-                        <span>{article.readTime}</span>
+                    {/* Content */}
+                    <div className="flex-1 p-4 space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-semibold text-gray-900 leading-tight hover:text-green-600 transition-colors line-clamp-2">
+                          {article.title}
+                        </h3>
                       </div>
-                      <Button variant="ghost" size="sm" className="h-auto p-1 text-xs">
-                        Read More →
-                      </Button>
+                      
+                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
+                        {article.summary}
+                      </p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                          <span className="text-green-600 font-medium">{article.source}</span>
+                          <span>{article.date}</span>
+                        </div>
+                        <Badge 
+                          variant="outline" 
+                          className={`text-xs ${getCategoryColor(article.category)}`}
+                        >
+                          {article.category}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Recent Activity */}
-        <Card>
+        <Card className="bg-white border-gray-200">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle className="text-gray-900">Recent Activity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {recentActivity.map((activity) => (
               <div key={activity.id} className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">{activity.action}</p>
-                  <p className="text-sm text-muted-foreground">{activity.time}</p>
+                  <p className="font-medium text-gray-900">{activity.action}</p>
+                  <p className="text-sm text-gray-500">{activity.time}</p>
                 </div>
                 <Badge 
                   variant={
@@ -475,10 +517,10 @@ Farmers interested in organic transition should start with small plots, get prop
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-4">
-          <Button className="h-14 text-lg">
+          <Button className="h-14 text-lg bg-green-600 hover:bg-green-700">
             🌱 List Product
           </Button>
-          <Button variant="outline" className="h-14 text-lg">
+          <Button variant="outline" className="h-14 text-lg border-gray-300 text-gray-700 hover:bg-gray-50">
             📞 Get Support
           </Button>
         </div>
